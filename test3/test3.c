@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS  
+ï»¿#define _CRT_SECURE_NO_WARNINGS  
 #include <stdio.h>  
 #include <stdlib.h>  
 #include <string.h>  
@@ -13,8 +13,7 @@ typedef struct {
 
 typedef struct {
     int car;
-    int bus;
-	int subway;
+    int gas;
     int elec;
     int egg;
     int disposable;
@@ -55,7 +54,7 @@ void data_store(userdat* data, const char* id)
         fp = fopen(filename, "wb+");
         if (fp == NULL)
         {
-            perror("ÆÄÀÏ ¿­±â ½ÇÆĞ");
+            perror("íŒŒì¼ ì—´ê¸° ì‹¤íŒ¨");
             return;
         }
         cnt = 1;
@@ -77,7 +76,7 @@ void data_store(userdat* data, const char* id)
 
     fseek(fp, 0, SEEK_END);
     if (fwrite(data, sizeof(userdat), 1, fp) != 1) {
-        perror("µ¥ÀÌÅÍ ÀúÀå ½ÇÆĞ");
+        perror("ë°ì´í„° ì €ì¥ ì‹¤íŒ¨");
     }
 
     fclose(fp);
@@ -91,7 +90,7 @@ userdat* Import_Data(const char* id, int* count)
 
     FILE* fp = fopen(filename, "rb");
     if (fp == NULL) {
-        printf("ÆÄÀÏ ¿­±â ½ÇÆĞ\n");
+        printf("íŒŒì¼ ì—´ê¸° ì‹¤íŒ¨\n");
         return NULL;
     }
     fread(&cnt, sizeof(int), 1, fp);
@@ -99,7 +98,7 @@ userdat* Import_Data(const char* id, int* count)
     userdat* data = (userdat*)malloc(sizeof(userdat) * cnt);
 
     if (data == NULL) {
-        printf("¸Ş¸ğ¸® ÇÒ´ç ½ÇÆĞ\n");
+        printf("ë©”ëª¨ë¦¬ í• ë‹¹ ì‹¤íŒ¨\n");
         fclose(fp);
         return NULL;
     }
@@ -112,15 +111,34 @@ userdat* Import_Data(const char* id, int* count)
 
 void carbon_emissions_warning(userdat* data)
 {
-
-    if (data->total > 1000)
+    if (data->car > 20)
     {
-        printf("°æ°í: Åº¼Ò ¹èÃâ·®ÀÌ 1000kgÀ» ÃÊ°úÇß½À´Ï´Ù!\n");
+        printf("ê²½ê³ : ìë™ì°¨ ì´ë™ê±°ë¦¬ê°€ 20kmë¥¼ ì´ˆê³¼í–ˆìŠµë‹ˆë‹¤! ëŒ€ì¤‘êµí†µì„ ì´ìš©í•´ì£¼ì„¸ìš”\n");
+    }
+
+    if( data->gas > 10)
+    {
+        printf("ê²½ê³ : ê°€ìŠ¤ ì‚¬ìš©ëŸ‰ì´ 10m^3ì„ ì´ˆê³¼í–ˆìŠµë‹ˆë‹¤! ë³´ì¼ëŸ¬ë¥¼ ì ˆì•½í•´ì£¼ì„¸ìš”\n");
+	}
+
+    if( data->elec > 30)
+    {
+        printf("ê²½ê³ : ì „ê¸° ì‚¬ìš©ëŸ‰ì´ 30kWhì„ ì´ˆê³¼í–ˆìŠµë‹ˆë‹¤! ë¶ˆí•„ìš”í•œ ì „ê¸° ì°¨ë‹¨ í•´ì£¼ì„¸ìš”\n");
+	}
+
+    if (data->disposable > 5)
+    {
+        printf("ê²½ê³ : ì¼íšŒìš©í’ˆ ì‚¬ìš© ê°œìˆ˜ê°€ 5ê°œë¥¼ ì´ˆê³¼í–ˆìŠµë‹ˆë‹¤! í…€ë¸”ëŸ¬, ì¥ë°”êµ¬ë‹ˆ ë“¤ê³  ë‹¤ë…€ ì£¼ì„¸ìš”\n");
+    }
+
+    if (data->total > 500)
+    {
+        printf("ê²½ê³ : íƒ„ì†Œ ë°°ì¶œëŸ‰ì´ 500kgì„ ì´ˆê³¼í–ˆìŠµë‹ˆë‹¤!\n");
 		printf("\n");
     }
-    else if (data->total > 500)
+    else if (data->total > 250)
     {
-        printf("ÁÖÀÇ: Åº¼Ò ¹èÃâ·®ÀÌ 500kgÀ» ÃÊ°úÇß½À´Ï´Ù!\n");
+        printf("ì£¼ì˜: íƒ„ì†Œ ë°°ì¶œëŸ‰ì´ 250kgì„ ì´ˆê³¼í–ˆìŠµë‹ˆë‹¤!\n");
         printf("\n");
     }
 }
@@ -131,19 +149,17 @@ void Total_carbon_emissions(userdat* data)
     double elec_emission = 0.424 * data->elec;
     double disposable_emission = 0.1 * data->disposable;
 	double egg_emission = 0.3 * data->egg; 
-	double bus_emission = 0.08 * data->bus; 
-	double subway_emission = 0.04 * data->subway; 
+	double gas_emission = 0.08 * data->gas; 
 
-	data->total = car_emission + elec_emission + disposable_emission + egg_emission + bus_emission + subway_emission;
+    data->total = car_emission + elec_emission + disposable_emission + egg_emission + gas_emission;
 
-    printf("ÀÚµ¿Â÷: %d km x 0.2 = %.2f kg\n", data->car, car_emission);
-	printf("¹ö½º: %d km x 0.08 = %.2f kg\n", data->bus, bus_emission);
-	printf("ÁöÇÏÃ¶: %d km x 0.04 = %.2f kg\n", data->subway, subway_emission);
-    printf("Àü±â: %d kWh x 0.424 = %.2f kg\n", data->elec, elec_emission);
-    printf("ÀÏÈ¸¿ëÇ°: %d °³ x 0.1 = %.2f kg\n", data->disposable, disposable_emission);
-	printf("°è¶õ: %d °³ x 0.3 = %.2f kg\n", data->egg, egg_emission);
+    printf("ìë™ì°¨: %d km x 0.2 = %.2f kg\n", data->car, car_emission);
+	printf("ê°€ìŠ¤: %d m^3 x 0.08 = %.2f kg\n", data->gas, gas_emission);
+    printf("ì „ê¸°: %d kWh x 0.424 = %.2f kg\n", data->elec, elec_emission);
+    printf("ì¼íšŒìš©í’ˆ: %d ê°œ x 0.1 = %.2f kg\n", data->disposable, disposable_emission);
+	printf("ê³„ë€: %d ê°œ x 0.3 = %.2f kg\n", data->egg, egg_emission);
     printf("\n");
-	printf("¿À´ÃÀÇ ÃÑ Åº¼Ò ¹èÃâ·®: %.2f kg CO2\n", data->total);
+	printf("ì˜¤ëŠ˜ì˜ ì´ íƒ„ì†Œ ë°°ì¶œëŸ‰: %.2f kg CO2\n", data->total);
 
 }
 
@@ -151,93 +167,127 @@ void today_emmission(userdat* data, const char* id)
 {
     int temp;
     system("cls");
-    printf("----¿À´ÃÀÇ Åº¼Ò ¹ßÀÚ±¹ ÀÔ·Â----\n");
+    printf("----ì˜¤ëŠ˜ì˜ íƒ„ì†Œ ë°œìêµ­ ì…ë ¥----\n");
 
     do {
-        printf("¿À´Ã ÀÚµ¿Â÷ ÀÌµ¿°Å¸®(km): ");
+        printf("ì˜¤ëŠ˜ ìë™ì°¨ ì´ë™ê±°ë¦¬(km): ");
         if (scanf_s("%d", &temp) != 1) {
             while (getchar() != '\n'); 
-            printf("Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù. ¼ıÀÚ¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.\n");
+            printf("ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤. ìˆ«ìë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.\n");
             continue;
         }
         if (temp < 0) {
-            printf("ÀÌµ¿°Å¸®´Â 0 ÀÌ»óÀÌ¾î¾ß ÇÕ´Ï´Ù.\n");
+            printf("ì´ë™ê±°ë¦¬ëŠ” 0 ì´ìƒì´ì–´ì•¼ í•©ë‹ˆë‹¤.\n");
         }
     } while (temp < 0);
     data->car = temp;
 
     do {
-        printf("¿À´Ã ¹ö½º ÀÌµ¿°Å¸®(km): ");
+        printf("ì˜¤ëŠ˜ ê°€ìŠ¤ ì‚¬ìš©ëŸ‰(m^3): ");
         if (scanf_s("%d", &temp) != 1) {
             while (getchar() != '\n');
-            printf("Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù. ¼ıÀÚ¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.\n");
+            printf("ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤. ìˆ«ìë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.\n");
             continue;
         }
         if (temp < 0) {
-            printf("ÀÌµ¿°Å¸®´Â 0 ÀÌ»óÀÌ¾î¾ß ÇÕ´Ï´Ù.\n");
+            printf("ì‚¬ìš©ëŸ‰ì€ 0 ì´ìƒì´ì–´ì•¼ í•©ë‹ˆë‹¤.\n");
         }
     } while (temp < 0);
-    data->bus = temp;
+    data->gas = temp;
+
 
     do {
-        printf("¿À´Ã ÁöÇÏÃ¶ ÀÌµ¿°Å¸®(km): ");
+        printf("ì˜¤ëŠ˜ ì „ê¸° ì‚¬ìš©ëŸ‰(kWh): ");
         if (scanf_s("%d", &temp) != 1) {
             while (getchar() != '\n');
-            printf("Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù. ¼ıÀÚ¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.\n");
+            printf("ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤. ìˆ«ìë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.\n");
             continue;
         }
         if (temp < 0) {
-            printf("ÀÌµ¿°Å¸®´Â 0 ÀÌ»óÀÌ¾î¾ß ÇÕ´Ï´Ù.\n");
-        }
-    } while (temp < 0);
-    data->subway = temp;
-
-    do {
-        printf("¿À´Ã Àü±â »ç¿ë·®(kWh): ");
-        if (scanf_s("%d", &temp) != 1) {
-            while (getchar() != '\n');
-            printf("Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù. ¼ıÀÚ¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.\n");
-            continue;
-        }
-        if (temp < 0) {
-            printf("»ç¿ë·®Àº 0 ÀÌ»óÀÌ¾î¾ß ÇÕ´Ï´Ù.\n");
+            printf("ì‚¬ìš©ëŸ‰ì€ 0 ì´ìƒì´ì–´ì•¼ í•©ë‹ˆë‹¤.\n");
         }
     } while (temp < 0);
     data->elec = temp;
 
     do {
-        printf("¿À´Ã ÀÏÈ¸¿ëÇ° »ç¿ë °³¼ö: ");
+        printf("ì˜¤ëŠ˜ ì¼íšŒìš©í’ˆ ì‚¬ìš© ê°œìˆ˜: ");
         if (scanf_s("%d", &temp) != 1) {
             while (getchar() != '\n');
-            printf("Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù. ¼ıÀÚ¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.\n");
+            printf("ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤. ìˆ«ìë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.\n");
             continue;
         }
         if (temp < 0) {
-            printf("°³¼ö´Â 0 ÀÌ»óÀÌ¾î¾ß ÇÕ´Ï´Ù.\n");
+            printf("ê°œìˆ˜ëŠ” 0 ì´ìƒì´ì–´ì•¼ í•©ë‹ˆë‹¤.\n");
         }
     } while (temp < 0);
     data->disposable = temp;
 
     do {
-        printf("¿À´Ã °è¶õ ¼Òºñ °³¼ö: ");
+        printf("ì˜¤ëŠ˜ ê³„ë€ ì†Œë¹„ ê°œìˆ˜: ");
         if (scanf_s("%d", &temp) != 1) {
             while (getchar() != '\n');
-            printf("Àß¸øµÈ ÀÔ·ÂÀÔ´Ï´Ù. ¼ıÀÚ¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä.\n");
+            printf("ì˜ëª»ëœ ì…ë ¥ì…ë‹ˆë‹¤. ìˆ«ìë¥¼ ì…ë ¥í•´ì£¼ì„¸ìš”.\n");
             continue;
         }
         if (temp < 0) {
-            printf("°³¼ö´Â 0 ÀÌ»óÀÌ¾î¾ß ÇÕ´Ï´Ù.\n");
+            printf("ê°œìˆ˜ëŠ” 0 ì´ìƒì´ì–´ì•¼ í•©ë‹ˆë‹¤.\n");
         }
     } while (temp < 0);
     data->egg = temp;
 
     printf("\n");
-    printf("ÀÔ·Â ¿Ï·á!\n");
+    printf("ì…ë ¥ ì™„ë£Œ!\n");
     Total_carbon_emissions(data);
     printf("\n");
     carbon_emissions_warning(data);
     today(&(data->today));
     data_store(data, id);
+}
+
+void draw_bar(int value, int max_value, int width)
+{
+    int bar_length = (int)((double)value / max_value * width);
+    for (int i = 0; i < bar_length; i++) {
+        printf("#");
+    }
+    for (int i = bar_length; i < width; i++) {
+        printf(" ");
+    }
+}
+
+char *get_day(int day)
+{
+    switch (day) {
+        case 0: return "ì¼ìš”ì¼";
+        case 1: return "ì›”ìš”ì¼";
+        case 2: return "í™”ìš”ì¼";
+        case 3: return "ìˆ˜ìš”ì¼";
+        case 4: return "ëª©ìš”ì¼";
+        case 5: return "ê¸ˆìš”ì¼";
+        case 6: return "í† ìš”ì¼";
+        default: return "ì•Œ ìˆ˜ ì—†ìŒ";
+    }
+}
+
+void graph_by_weekday(userdat* data, int cnt)
+{
+    double weekday_total[7] = { 0 };
+    double max_total = 0;
+
+    
+    for (int i = 0; i < cnt; i++) {
+        int wday = data[i].today.tm_wday; 
+        weekday_total[wday] = data[i].total;
+        if (weekday_total[wday] > max_total)
+            max_total = weekday_total[wday];
+    }
+
+    printf("\n[ìš”ì¼ë³„ íƒ„ì†Œ ë°°ì¶œëŸ‰ ê·¸ë˜í”„]\n");
+    for (int i = 0; i < 7; i++) {
+        printf("%s: ", get_day(i));
+        draw_bar((int)weekday_total[i], (int)max_total == 0 ? 1 : (int)max_total, 50);
+        printf(" %.1f kg CO2\n", weekday_total[i]);
+    }
 }
 
 void cumulative_statistics(const char* id)
@@ -246,7 +296,7 @@ void cumulative_statistics(const char* id)
     int cnt;
     userdat* data = Import_Data(id, &cnt);
     if (data == NULL || cnt == 0) {
-        printf("µ¥ÀÌÅÍ¸¦ ºÒ·¯¿Ã ¼ö ¾ø½À´Ï´Ù.\n");
+        printf("ë°ì´í„°ë¥¼ ë¶ˆëŸ¬ì˜¬ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.\n");
         return;
     }
     double sum = 0;
@@ -264,10 +314,12 @@ void cumulative_statistics(const char* id)
         sum += data[i].total;
     }
 
-    printf("Áö±İ±îÁö ÃÑ Åº¼Ò ¹èÃâ·®: %.1f kg CO2\n", sum);
-    printf("ÀÏÆò±Õ Åº¼Ò ¹èÃâ·®: %.1f kg CO2\n", sum / cnt);
-    printf("Áö±İ±îÁöÀÇ ÇÏ·ç ÃÖ´ë ¹èÃâ·®: %.1f kg CO2 %d³â %d¿ù %dÀÏ\n", data[maxi].total, data[maxi].today.tm_year, data[maxi].today.tm_mon, data[maxi].today.tm_mday);
-    printf("Áö±İ±îÁöÀÇ ÇÏ·ç ÃÖ¼Ò ¹èÃâ·®: %.1f kg CO2 %d³â %d¿ù %dÀÏ\n", data[mini].total, data[mini].today.tm_year, data[mini].today.tm_mon, data[mini].today.tm_mday);
+    printf("ì§€ê¸ˆê¹Œì§€ ì´ íƒ„ì†Œ ë°°ì¶œëŸ‰: %.1f kg CO2\n", sum);
+    printf("ì¼í‰ê·  íƒ„ì†Œ ë°°ì¶œëŸ‰: %.1f kg CO2\n", sum / cnt);
+    printf("ì§€ê¸ˆê¹Œì§€ì˜ í•˜ë£¨ ìµœëŒ€ ë°°ì¶œëŸ‰: %.1f kg CO2 %dë…„ %dì›” %dì¼\n", data[maxi].total, data[maxi].today.tm_year, data[maxi].today.tm_mon, data[maxi].today.tm_mday);
+    printf("ì§€ê¸ˆê¹Œì§€ì˜ í•˜ë£¨ ìµœì†Œ ë°°ì¶œëŸ‰: %.1f kg CO2 %dë…„ %dì›” %dì¼\n", data[mini].total, data[mini].today.tm_year, data[mini].today.tm_mon, data[mini].today.tm_mday);
+
+    graph_by_weekday(data, cnt);
 
     free(data);
 }
@@ -279,20 +331,20 @@ void menu(userdat* data, const char* id)
         system("cls");
         char op;
         printf("=======================================\n");
-        printf("* Åº¼Ò ¹ßÀÚ±¹ ÃßÀû ÇÁ·Î±×·¥ *\n");
+        printf("* íƒ„ì†Œ ë°œìêµ­ ì¶”ì  í”„ë¡œê·¸ë¨ *\n");
         printf("=======================================\n");
-        printf("1) µ¥ÀÌÅÍ ÀÔ·Â\n");
-        printf("2) ¿ä¾à º¸±â\n");
-        printf("3) Á¾·á\n");
+        printf("1) ë°ì´í„° ì…ë ¥\n");
+        printf("2) ìš”ì•½ ë³´ê¸°\n");
+        printf("3) ì¢…ë£Œ\n");
         printf("=======================================\n");
-        printf("¼±ÅÃÇÒ ¸Ş´º ¹øÈ£¸¦ ÀÔ·ÂÇÏ¼¼¿ä");
+        printf("ì„ íƒí•  ë©”ë‰´ ë²ˆí˜¸ë¥¼ ì…ë ¥í•˜ì„¸ìš”");
 		op = _getch();
         printf("\n");
         if (op == '1')
         {
             today_emmission(data, id);
-            
-            printf("¿£ÅÍ Å°¸¦ ´©¸£¸é ¸ŞÀÎ ¸Ş´º·Î µ¹¾Æ°©´Ï´Ù...\n");
+			printf("\n");
+            printf("ì—”í„° í‚¤ë¥¼ ëˆ„ë¥´ë©´ ë©”ì¸ ë©”ë‰´ë¡œ ëŒì•„ê°‘ë‹ˆë‹¤...\n");
 
             while (getchar() != '\n'); 
 
@@ -306,7 +358,7 @@ void menu(userdat* data, const char* id)
         {
             cumulative_statistics(id);
             printf("\n");
-            printf("¿£ÅÍ Å°¸¦ ´©¸£¸é ¸ŞÀÎ ¸Ş´º·Î µ¹¾Æ°©´Ï´Ù...\n");
+            printf("ì—”í„° í‚¤ë¥¼ ëˆ„ë¥´ë©´ ë©”ì¸ ë©”ë‰´ë¡œ ëŒì•„ê°‘ë‹ˆë‹¤...\n");
 
               
 
@@ -326,9 +378,9 @@ void menu(userdat* data, const char* id)
 
 void login(userinf* user)
 {
-    printf("¾ÆÀÌµğ: ");
+    printf("ì•„ì´ë””: ");
     scanf("%10s", user->id);
-    printf("ºñ¹Ğ¹øÈ£: ");
+    printf("ë¹„ë°€ë²ˆí˜¸: ");
     scanf("%20s", user->password);
 }
 
@@ -356,9 +408,9 @@ void signin()
 {
     userinf user;
     FILE* fp = fopen("userdat.dat", "ab+");
-    printf("»õ¾ÆÀÌµğ: ");
+    printf("ìƒˆì•„ì´ë””: ");
     scanf("%10s", user.id);
-    printf("»õºñ¹Ğ¹øÈ£: ");
+    printf("ìƒˆë¹„ë°€ë²ˆí˜¸: ");
     scanf("%20s", user.password);
     fwrite(&user, sizeof(userinf), 1, fp);
     fclose(fp);
@@ -371,9 +423,9 @@ void first_window(userdat* data, userinf* user)
     {
 		system("cls");
         char op;
-        printf("1) ·Î±×ÀÎ\n");
-        printf("2) È¸¿ø°¡ÀÔ\n");
-        printf("3) Á¾·á\n");
+        printf("1) ë¡œê·¸ì¸\n");
+        printf("2) íšŒì›ê°€ì…\n");
+        printf("3) ì¢…ë£Œ\n");
 		op = _getch();
         printf("\n");
         if (op == '1')
@@ -381,21 +433,31 @@ void first_window(userdat* data, userinf* user)
             login(user);
             if (login_process(user) == 1)
             {
-                printf("·Î±×ÀÎ ¼º°ø\n");
+                printf("ë¡œê·¸ì¸ ì„±ê³µ\n");
                 while (getchar() != '\n');
                 menu(data, user->id);
                 break;
             }
             else if (login_process(user) == -1)
             {
-				continue;
+                printf("ë¡œê·¸ì¸ ì‹¤íŒ¨\n");
+                printf("\n");
+                printf("ì—”í„° í‚¤ë¥¼ ëˆ„ë¥´ë©´ ë©”ì¸ ë©”ë‰´ë¡œ ëŒì•„ê°‘ë‹ˆë‹¤...\n");
+
+                while (getchar() != '\n'); // ì…ë ¥ ë²„í¼ ë¹„ìš°ê¸°
+
+                if (getchar() == '\n')
+                {
+                    continue;
+                }
+				
             }
         }
         else if (op == '2')
         {
             signin();
             printf("\n");
-            printf("¿£ÅÍ Å°¸¦ ´©¸£¸é ¸ŞÀÎ ¸Ş´º·Î µ¹¾Æ°©´Ï´Ù...\n");
+            printf("ì—”í„° í‚¤ë¥¼ ëˆ„ë¥´ë©´ ë©”ì¸ ë©”ë‰´ë¡œ ëŒì•„ê°‘ë‹ˆë‹¤...\n");
 
             while (getchar() != '\n'); 
 
